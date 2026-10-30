@@ -1,0 +1,228 @@
+@import "tailwindcss";
+
+/* Two palettes. Dark is a night sky with gold and saffron; light is warm parchment, the colours of a
+   printed panchang. src/client/theme.ts picks one and sets data-theme on <html>. */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0b0a1a;
+  --bg-2: #120f2a;
+  --panel: #15122e;
+  --raise: #1d1940;
+  --hover: #262150;
+  --line: #2c2758;
+  --ink: #f4efe3;
+  --ink-2: #c9c2d9;
+  --muted: #8d86a8;
+  --gold: #e9b949;
+  --gold-ink: #f5d27e;
+  --saffron: #f2853a;
+  --accent: #e9b949;
+  --on-accent: #1a1405;
+  --good: #4fd19a;
+  --warn: #f5b84a;
+  --bad: #f06a6a;
+  --chart-bg: #110e27;
+  --chart-line: #4a4285;
+  --chart-ink: #e9e3f7;
+  --stars: 1;
+  --shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.8), 0 2px 10px rgba(0, 0, 0, 0.35);
+  --glow: rgba(233, 185, 73, 0.18);
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #fbf7ef;
+  --bg-2: #f4ecdc;
+  --panel: #ffffff;
+  --raise: #f6efe1;
+  --hover: #efe4cf;
+  --line: #e6d9bf;
+  --ink: #261a10;
+  --ink-2: #5a4632;
+  --muted: #8c7760;
+  --gold: #b7791f;
+  --gold-ink: #9a5f0c;
+  --saffron: #d9601c;
+  --accent: #c2410c;
+  --on-accent: #fff8ef;
+  --good: #15803d;
+  --warn: #b45309;
+  --bad: #c0392b;
+  --chart-bg: #fffaf0;
+  --chart-line: #d4b98a;
+  --chart-ink: #3a2a18;
+  --stars: 0;
+  --shadow: 0 30px 60px -32px rgba(90, 60, 20, 0.35), 0 2px 8px rgba(90, 60, 20, 0.08);
+  --glow: rgba(217, 96, 28, 0.12);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-panel: var(--panel);
+  --color-raise: var(--raise);
+  --color-hover: var(--hover);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-gold: var(--gold);
+  --color-gold-ink: var(--gold-ink);
+  --color-saffron: var(--saffron);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+  --font-sans: var(--font-geist-sans);
+  --font-display: var(--font-display);
+  --font-deva: var(--font-deva);
+}
+
+html {
+  background: var(--bg);
+  /* Anything scrolled into view (a focused field, a link target) clears the sticky header */
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* A quiet starfield behind everything in the dark theme */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--stars);
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(255, 255, 255, 0.7), transparent 60%),
+    radial-gradient(1px 1px at 72% 12%, rgba(255, 255, 255, 0.55), transparent 60%),
+    radial-gradient(1.5px 1.5px at 38% 64%, rgba(255, 240, 200, 0.6), transparent 60%),
+    radial-gradient(1px 1px at 86% 48%, rgba(255, 255, 255, 0.5), transparent 60%),
+    radial-gradient(1px 1px at 22% 82%, rgba(255, 255, 255, 0.45), transparent 60%),
+    radial-gradient(1.5px 1.5px at 58% 30%, rgba(255, 255, 255, 0.5), transparent 60%),
+    radial-gradient(1px 1px at 92% 86%, rgba(255, 230, 180, 0.5), transparent 60%),
+    radial-gradient(1px 1px at 5% 45%, rgba(255, 255, 255, 0.4), transparent 60%),
+    radial-gradient(900px 500px at 80% -10%, rgba(120, 90, 255, 0.16), transparent 70%),
+    radial-gradient(700px 500px at -10% 30%, rgba(233, 185, 73, 0.07), transparent 70%);
+  background-size: 640px 640px, 520px 520px, 760px 760px, 580px 580px, 700px 700px, 820px 820px, 600px 600px, 680px 680px, 100% 100%, 100% 100%;
+  transition: opacity 0.3s;
+}
+
+.theme-shift,
+.theme-shift * {
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s, fill 0.3s, stroke 0.3s !important;
+}
+
+.card {
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.gold-text {
+  background: linear-gradient(100deg, var(--gold-ink), var(--saffron));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.7rem 1.4rem;
+  font-weight: 600;
+  transition: transform 0.15s, background-color 0.2s, box-shadow 0.2s;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn-primary {
+  background: linear-gradient(100deg, var(--gold), var(--saffron));
+  color: var(--on-accent);
+  box-shadow: 0 10px 30px -10px var(--glow);
+}
+.btn-primary:hover {
+  box-shadow: 0 14px 34px -10px color-mix(in srgb, var(--saffron) 55%, transparent);
+}
+.btn-ghost {
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+.btn-ghost:hover {
+  background: var(--hover);
+}
+
+.field {
+  width: 100%;
+  border-radius: 0.8rem;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  color: var(--ink);
+  padding: 0.7rem 0.9rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.field:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--glow);
+}
+.label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  margin-bottom: 0.35rem;
+}
+
+/* Chart SVGs take their colours from the theme */
+.chart-frame {
+  fill: var(--chart-bg);
+  stroke: var(--chart-line);
+}
+.chart-line {
+  stroke: var(--chart-line);
+}
+.chart-sign {
+  fill: var(--muted);
+}
+.chart-planet {
+  fill: var(--chart-ink);
+}
+.chart-lagna {
+  fill: var(--saffron);
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin-slow {
+  animation: spin-slow 240s linear infinite;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+.rise {
+  animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin-slow,
+  .rise {
+    animation: none;
+  }
+}

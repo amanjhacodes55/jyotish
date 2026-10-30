@@ -1,0 +1,9 @@
+node_modules/
+.next/
+out/
+.netlify/
+.env*.local
+.env
+next-env.d.ts
+*.tsbuildinfo
+docs/video/build/

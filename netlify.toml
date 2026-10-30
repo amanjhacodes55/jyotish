@@ -1,0 +1,9 @@
+# Everything is calculated on the server and in the browser with Jyotish's own engine,
+# so there are no API keys or other services to set up.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_TELEMETRY_DISABLED = "1"
