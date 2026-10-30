@@ -10,7 +10,7 @@
 [![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![Tests](https://img.shields.io/badge/tests-155%20passing-3ecf8e)](tests)
 
-**Live:** {{LIVE_URL}} · [**Watch the demo video**](docs/media/jyotish-demo.mp4)
+**Live:** <https://jyotish-vedic.netlify.app> · [**Watch the demo video**](docs/media/jyotish-demo.mp4)
 
 [![Jyotish demo video: making a kundli](docs/media/kundli.png)](docs/media/jyotish-demo.mp4)
 

@@ -20,7 +20,8 @@
   .brand { display: inline-flex; align-items: center; gap: 24px; }
   .brand img { width: 96px; height: 96px; border-radius: 22px; }
   h1 { margin: 0; font: 700 104px/1 "Cormorant Garamond", serif; letter-spacing: 1px; }
-  .deva { font: 700 40px/1 "Noto Serif Devanagari", serif; margin-top: 18px;
+  /* Generous line height: background-clip text cuts off anything outside the box, like the top of ो */
+  .deva { font: 700 40px/1.6 "Noto Serif Devanagari", serif; margin-top: 6px; padding: 4px 0;
     background: linear-gradient(100deg, #f5d27e, #f2853a); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .tag { margin: 22px 0 0; font-size: 30px; font-weight: 500; color: #c9c2d9; }
   .rule { width: 90px; height: 4px; border-radius: 2px; background: linear-gradient(90deg, #e9b949, #f2853a); margin: 30px auto; }
