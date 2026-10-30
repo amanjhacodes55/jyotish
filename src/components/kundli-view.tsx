@@ -8,6 +8,9 @@ import { fmtClock, fmtDate, fmtLongDate } from "@/lib/format";
 import { formatOffset, offsetMinutes } from "@/lib/astro/time";
 import { ChartPair } from "./chart-pair";
 import { ShareButton } from "./share-button";
+import { SaveButton } from "./saved-kundlis";
+import { SkyMap } from "./sky-map";
+import type { Sky } from "@/lib/sky/sky";
 
 const signText = (s: number) => `${SIGNS[s].name} · ${SIGNS[s].sanskrit}`;
 
@@ -31,7 +34,7 @@ function Section({ title, kicker, children }: { title: string; kicker?: string; 
   );
 }
 
-export function KundliView({ birth, kundli }: { birth: Birth; kundli: Kundli }) {
+export function KundliView({ birth, kundli, sky }: { birth: Birth; kundli: Kundli; sky: Sky }) {
   const moon = kundli.planets.find((p) => p.id === "Moon")!;
   const sun = kundli.planets.find((p) => p.id === "Sun")!;
   const now = new Date();
@@ -60,7 +63,10 @@ export function KundliView({ birth, kundli }: { birth: Birth; kundli: Kundli }) 
             {birth.place && <span className="flex items-center gap-1.5"><MapPin size={15} /> {birth.place}</span>}
           </div>
         </div>
-        <ShareButton />
+        <div className="flex gap-2">
+          <SaveButton birth={birth} />
+          <ShareButton />
+        </div>
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -91,6 +97,10 @@ export function KundliView({ birth, kundli }: { birth: Birth; kundli: Kundli }) 
             },
           ]}
         />
+      </Section>
+
+      <Section title="The sky when you were born" kicker="Planets and constellations">
+        <SkyMap sky={sky} place={birth.place} />
       </Section>
 
       <Section title="Planetary positions" kicker="Graha">

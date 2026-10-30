@@ -8,7 +8,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
-[![Tests](https://img.shields.io/badge/tests-155%20passing-3ecf8e)](tests)
+[![Tests](https://img.shields.io/badge/tests-158%20passing-3ecf8e)](tests)
 
 **Live:** <https://jyotish-vedic.netlify.app> · [**Watch the demo video**](docs/media/jyotish-demo.mp4)
 
@@ -30,6 +30,11 @@ ayanamsa, and builds the chart from there. Your birth details live only in the p
   - **Vimshottari dasha**: all nine mahadashas over 120 years with every antardasha; the running one is open.
   - **Manglik** check from both the ascendant and the Moon.
   - Short readings for your ascendant, Moon sign and nakshatra (symbol, deity, gana and yoni).
+  - **The sky when you were born**: a star map of the whole sky above the birth place at that moment, with
+    the planets, the Moon, about a thousand naked-eye stars and every constellation; the twelve zodiac
+    constellations are picked out in gold with their rashi names, along with the ecliptic.
+- **Saved kundlis**: save any kundli with one tap and find it under *My saved kundlis*, or use it to fill in a
+  match. They stay in your own browser; no account, nothing sent anywhere.
 - **Panchang** for any city and date: tithi, nakshatra, yoga and karana, each with the exact time it ends;
   sunrise, sunset, moonrise and moonset; Rahu Kalam, Yamaganda and Gulika Kalam; Abhijit and Brahma muhurta;
   the lunar month (amanta and purnimanta, with adhika months) and ritu; and a drawing of the Moon's phase.
@@ -65,6 +70,7 @@ Swiss-Ephemeris-based service, for ten births from 1952 to 2031 in India, London
 | Retrograde flags, tithi, nakshatra end times | identical |
 | Vimshottari dasha | same lords; dates within hours |
 | Guna Milan | identical for Varna, Vashya, Tara, Yoni, Graha Maitri, Bhakoot and Nadi |
+| Sky map | Polaris at the place's latitude, due north; the noon Sun where it should be ([`tests/sky.test.ts`](tests/sky.test.ts)) |
 
 Two documented differences: Jyotish applies ΔT (the difference between atomic time and Earth's rotation), so its
 Moon is a few tens of arcseconds ahead of the API's; and for Gana and same-nakshatra Tara it follows the common
@@ -77,7 +83,7 @@ North Indian tables where the API uses a variant. The API's answers are saved in
 ```bash
 npm install
 npm run dev        # http://localhost:3000
-npm test           # 155 tests
+npm test           # 158 tests
 npm run typecheck && npm run lint
 ```
 
@@ -97,6 +103,7 @@ src/lib/astro/
   panchang.ts    tithi, nakshatra, yoga, karana with end times, muhurtas, lunar month
   matching.ts    Ashtakoota Guna Milan
   time.ts        local birth time in an IANA zone -> UTC
+src/lib/sky/     the star map: horizon positions, stereographic projection, star data
 src/app/         Next.js pages: / kundli panchang matching support
 docs/video/      the scripted, narrated demo recording
 ```
@@ -106,6 +113,9 @@ TypeScript with no network calls.
 
 The demo video is recorded from the running site with Playwright and narrated with Kokoro TTS:
 `npm run build && npx next start -p 3022`, then `node docs/video/demo.mjs`.
+
+Star positions and constellation figures come from [d3-celestial](https://github.com/ofrohn/d3-celestial)
+by Olaf Frohn (BSD 3-Clause), trimmed to naked-eye stars by `scripts/build-sky-data.mjs`.
 
 ## ☕ Buy me a coffee
 

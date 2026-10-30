@@ -38,6 +38,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        {/* Netlify injects a "Powered by Netlify" badge in the corner: remove it, and keep removing it if it comes back */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(()=>{const k=()=>document.querySelectorAll('#nl-badge-frame,#nl-badge,[id^="nl-badge"]').forEach(e=>e.remove());k();new MutationObserver(k).observe(document.documentElement,{childList:true,subtree:true})})()`,
+          }}
+        />
       </body>
     </html>
   );

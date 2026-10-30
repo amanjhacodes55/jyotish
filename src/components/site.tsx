@@ -53,6 +53,7 @@ export function Footer() {
           <Link className="block hover:text-ink" href="/kundli">Kundli</Link>
           <Link className="block hover:text-ink" href="/panchang">Panchang</Link>
           <Link className="block hover:text-ink" href="/matching">Kundli matching</Link>
+          <Link className="block hover:text-ink" href="/saved">My saved kundlis</Link>
         </div>
         <div className="space-y-2">
           <p className="font-semibold text-ink">Project</p>

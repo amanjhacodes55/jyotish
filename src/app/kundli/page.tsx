@@ -4,6 +4,8 @@ import { KundliView } from "@/components/kundli-view";
 import { computeKundli } from "@/lib/astro/kundli";
 import { zonedToUtc } from "@/lib/astro/time";
 import { parseBirth } from "@/lib/birth";
+import { skyAt } from "@/lib/sky/sky";
+import { SavedList } from "@/components/saved-kundlis";
 
 export async function generateMetadata({ searchParams }: PageProps<"/kundli">): Promise<Metadata> {
   const birth = parseBirth(await searchParams);
@@ -35,14 +37,18 @@ export default async function KundliPage({ searchParams }: PageProps<"/kundli">)
         <div className="rise" style={{ animationDelay: "0.1s" }}>
           <KundliForm initial={null} />
         </div>
+        <div className="md:col-span-2">
+          <SavedList />
+        </div>
       </div>
     );
   }
 
-  const kundli = computeKundli(zonedToUtc(birth.date, birth.time, birth.tz), birth.lat, birth.lon);
+  const at = zonedToUtc(birth.date, birth.time, birth.tz);
+  const kundli = computeKundli(at, birth.lat, birth.lon);
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
-      <KundliView birth={birth} kundli={kundli} />
+      <KundliView birth={birth} kundli={kundli} sky={skyAt(at, birth.lat, birth.lon)} />
       <section className="mt-14 grid gap-6 md:grid-cols-[1fr_440px] md:items-start">
         <div>
           <h2 className="font-display text-3xl font-semibold">Make another kundli</h2>
