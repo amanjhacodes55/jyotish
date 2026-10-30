@@ -96,16 +96,20 @@ function cues(text, file) {
 const browser = await launch();
 const ctx = await newContext(browser, { colorScheme: "dark" });
 await ctx.grantPermissions(["clipboard-read", "clipboard-write"], { origin: BASE });
+// Two kundlis saved earlier, so the matching scene can fill both sides from the saved list
+await ctx.addInitScript(() => {
+  if (localStorage.getItem("jyotish:saved")) return;
+  localStorage.setItem("jyotish:saved", JSON.stringify([
+    { name: "Ananya", date: "1995-02-21", time: "18:20", place: "Jaipur, Rajasthan, India", lat: 26.9124, lon: 75.7873, tz: "Asia/Kolkata", savedAt: 2 },
+    { name: "Rahul", date: "1993-04-12", time: "07:45", place: "Patna, Bihar, India", lat: 25.5941, lon: 85.1376, tz: "Asia/Kolkata", savedAt: 1 },
+  ]));
+});
 const page = await ctx.newPage();
 const P = pointer(page);
 
 const card = await (await newContext(browser)).newPage();
 const icon = `data:image/svg+xml;base64,${fs.readFileSync(path.join(HERE, "../../src/app/icon.svg")).toString("base64")}`;
 await card.setContent(fs.readFileSync(path.join(HERE, "outro.html"), "utf8").replace("{{LIVE}}", LIVE).replace("{{ICON}}", icon), { waitUntil: "networkidle" });
-
-const MATCH =
-  "/matching?bname=Rahul&bdate=1993-04-12&btime=07:45&bplace=Patna%2C+Bihar%2C+India&blat=25.5941&blon=85.1376&btz=Asia%2FKolkata" +
-  "&gname=Ananya&gdate=1995-02-21&gtime=18:20&gplace=Jaipur%2C+Rajasthan%2C+India&glat=26.9124&glon=75.7873&gtz=Asia%2FKolkata";
 
 const scrollTo = async (locator, offset = 90, ms = 1200) => {
   const y = await page.locator(locator).first().evaluate((el) => el.getBoundingClientRect().top);
@@ -157,7 +161,7 @@ const beats = [
     await P.click(page.locator("#k-date"), { dx: 0.1 });
     await page.keyboard.type("09241998", { delay: 110 });
     await P.click(page.locator("#k-time"), { dx: 0.15 });
-    await page.keyboard.type("0615AM", { delay: 120 });
+    await page.keyboard.type("0915PM", { delay: 120 });
     await pickPlace("#k-place", "Varanasi", "Uttar Pradesh");
     await sleep(500);
   } },
@@ -179,6 +183,19 @@ const beats = [
     await sleep(2000);
     await P.click(page.getByRole("button", { name: "North Indian" }));
     await sleep(600);
+  } },
+  { page, text: "Then the sky itself: every planet, star and constellation above the birth place at that very moment, with the zodiac picked out in gold.", run: async () => {
+    await scrollTo("text=The sky when you were born", 80, 1400);
+    await sleep(700);
+    const moon = page.locator("svg[aria-label^='The sky above'] text", { hasText: "Moon" }).first();
+    if (await moon.count()) await P.hover(moon, { ms: 1100 });
+    await sleep(900);
+    const gold = page.locator("svg[aria-label^='The sky above'] text", { hasText: "·" });
+    for (let i = 0; i < Math.min(3, await gold.count()); i++) {
+      await P.hover(gold.nth(i), { ms: 700 });
+      await sleep(450);
+    }
+    await P.hover(page.getByText("At that moment"), { ms: 900 });
   } },
   { page, text: "Every planet's sign, degree, nakshatra and pada, its house and Navamsa, and whether it's retrograde, exalted or in its own sign.",
     say: "Every planet's sign, degree, nakshatra and paada, its house and Navaamsha, and whether it's retrograde, exalted or in its own sign.", run: async () => {
@@ -207,11 +224,22 @@ const beats = [
     await sleep(1600);
     await P.scroll(300, 1000);
   } },
-  { page, text: "The whole chart lives in its link, so you can copy it to share or bookmark, and it opens exactly the same.", run: async () => {
-    await P.scroll(-6000, 1100);
+  { page, text: "Save it with one tap, or share it: the whole chart lives in its link and opens exactly the same.", run: async () => {
+    await P.scroll(-8000, 1100);
     await sleep(300);
+    await P.click(page.getByRole("button", { name: "Save", exact: true }));
+    await sleep(1200);
     await P.click(page.getByRole("button", { name: "Share" }));
-    await sleep(2200);
+    await sleep(1600);
+  } },
+  { page, text: "Your saved kundlis are kept in your own browser, ready to open again. No account, nothing sent anywhere.", run: async () => {
+    await page.goto(BASE + "/saved", { waitUntil: "networkidle" });
+    await sleep(700);
+    const rows = page.locator("main li");
+    for (let i = 0; i < Math.min(3, await rows.count()); i++) {
+      await P.hover(rows.nth(i), { dx: 0.4, ms: 700 });
+      await sleep(500);
+    }
   } },
   { page, text: "The panchang shows the day's tithi, nakshatra, yoga and karana, each with the exact time it ends.",
     say: "The panchaang shows the day's tithi, nakshatra, yoga and karana, each with the exact time it ends.", run: async () => {
@@ -238,10 +266,20 @@ const beats = [
     await P.hover(page.getByText("Rahu Kalam"), { ms: 900 });
     await sleep(600);
   } },
-  { page, text: "Kundli matching runs the eight-fold Guna Milan: a score out of thirty-six, every koota explained, and any Nadi or Bhakoot dosha.",
-    say: "Kundli matching runs the eight-fold Guna Milan: a score out of thirty-six, every koota explained, and any Naadi or Bhakoot dosha.", run: async () => {
-    await page.goto(BASE + MATCH, { waitUntil: "networkidle" });
-    await sleep(900);
+  { page, text: "For kundli matching, fill both sides from your saved kundlis. The eight-fold Guna Milan gives a score out of thirty-six, every koota explained, and any Nadi or Bhakoot dosha.",
+    say: "For kundli matching, fill both sides from your saved kundlis. The eight-fold Guna Milan gives a score out of thirty-six, every koota explained, and any Naadi or Bhakoot dosha.", run: async () => {
+    await page.goto(BASE + "/matching", { waitUntil: "networkidle" });
+    await sleep(500);
+    const pick = page.getByRole("combobox", { name: "Fill from a saved kundli" });
+    await P.click(pick.nth(0));
+    await pick.nth(0).selectOption({ label: "Rahul · 12 Apr 1993" });
+    await sleep(500);
+    await P.click(pick.nth(1));
+    await pick.nth(1).selectOption({ label: "Ananya · 21 Feb 1995" });
+    await sleep(500);
+    await P.click(page.getByRole("button", { name: "Match kundlis" }));
+    await page.waitForURL("**/matching?**");
+    await sleep(700);
     await P.hover(page.locator("svg[aria-label$='gunas']"), { ms: 900 });
     await sleep(900);
     await scrollTo("text=Koota", 120, 1300);
